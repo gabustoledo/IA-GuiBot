@@ -13,7 +13,8 @@ def say(text):
 	voice.say(text)
 	voice.runAndWait()
 
-while True:
+inRun = True
+while inRun:
 	recognizer = sr.Recognizer()
 
 	with sr.Microphone() as source:
@@ -46,6 +47,6 @@ while True:
 			for i in ['termina','terminar','termino']:
 				if i in comando:
 					say('Sesion finalizada')
-					exit()
+					inRun = False
 	except:
 		print('No te entendi, por favor vuelve a internarlo')
