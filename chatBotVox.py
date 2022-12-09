@@ -7,11 +7,15 @@ from datetime import datetime
 import openai
 import requests
 import random
+import json
 
 ID_USER = "639173be6139ec1893580416"
 POST_RECORDATORIO = "http://localhost:8080/reminder/save/" + ID_USER
 POST_CONVERSACION = "http://localhost:8080/conversation/save/" + ID_USER
 POST_ALERTA = "http://localhost:8080/alert/save/" + ID_USER
+POST_MOVIMIENTO = "http://localhost:8080/movement/save/" + ID_USER
+GET_DORECORDATORIO = "http://localhost:8080/reminder/doReminder/" + ID_USER
+GET_RECORDATORIO = "http://localhost:8080/reminder/find/"
 
 # Iniciacion de openai
 openai.api_key = "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"
@@ -36,6 +40,19 @@ recordatorio = ""
 fechaRecordatorio = ""
 horaRecordatorio = ""
 while inRun:
+
+	x = requests.get(GET_DORECORDATORIO)
+	response = x.content.decode()
+	if response != 'No hay recordatorio activo':
+		x = requests.get(GET_RECORDATORIO + response)
+		response_recordatorio = x.content.decode()
+		response_json = json.loads(response_recordatorio)
+		recordatorio_descr = response_json["reminder_description"]
+
+		say("Recuerda que actualmente tienes un recordatorio que dice: " + recordatorio_descr)
+		conversation += "\nAI: Recuerda que actualmente tienes un recordatorio que dice: " + recordatorio_descr
+
+
 	recognizer = sr.Recognizer()
 
 	with sr.Microphone() as source:
@@ -62,7 +79,15 @@ while inRun:
 					alertas = ['Gritos', 'Llantos', 'Persona extraña', 'Alerta1', 'Alerta2', 'Alerta3']
 					x = requests.post(POST_ALERTA + "?alert_description=" + random.choice(alertas))
 
-		if 'recordatorio' in comandoSplit:
+		if 'movimiento' in comandoSplit:
+			for i in ['habitación', 'cocina', 'baño']:
+				if i in comandoSplit:
+					print('Movimiento a ' + i)
+					x = requests.post(POST_MOVIMIENTO + "?place=" + i)
+					say("Movimiento almacenado")
+
+
+		elif 'recordatorio' in comandoSplit:
 			modoRecordatorio = True
 			conversation += "\nHumano: " + comando + "\nAI: ¿Qué recordatorio deseas guardar?"
 			say("¿Qué recordatorio deseas guardar?")
