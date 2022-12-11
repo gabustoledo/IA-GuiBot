@@ -9,13 +9,16 @@ import requests
 import random
 import json
 
-ID_USER = "639173be6139ec1893580416"
+# ID_USER = "639173be6139ec1893580416"
+ID_USER = ""
+ID_PRODUCT = "1111 2222 3333 4444"
 POST_RECORDATORIO = "http://localhost:8080/reminder/save/" + ID_USER
 POST_CONVERSACION = "http://localhost:8080/conversation/save/" + ID_USER
 POST_ALERTA = "http://localhost:8080/alert/save/" + ID_USER
 POST_MOVIMIENTO = "http://localhost:8080/movement/save/" + ID_USER
 GET_DORECORDATORIO = "http://localhost:8080/reminder/doReminder/" + ID_USER
 GET_RECORDATORIO = "http://localhost:8080/reminder/find/"
+GET_SYNC = "http://localhost:8080/product_user/sync?product_number=" + ID_PRODUCT
 
 # Iniciacion de openai
 openai.api_key = "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"
@@ -30,6 +33,14 @@ voice.setProperty('rate',170)
 def say(text):
 	voice.say(text)
 	voice.runAndWait()
+
+print("\n\nEsperando sincronizacion...\n\n")
+while ID_USER == "":
+	x = requests.get(GET_SYNC)
+	response = x.content.decode()
+	if(response != "No se ha sincronizado un usuario al dispositivo"):
+		ID_USER = response
+print("Producto correctamente sincronizado\n\n")
 
 inRun = True
 modoRecordatorio = False
