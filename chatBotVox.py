@@ -11,12 +11,12 @@ import json
 
 # ID_USER = "639173be6139ec1893580416"
 ID_USER = ""
-ID_PRODUCT = "1111 2222 3333 4444"
+ID_PRODUCT = "2222 3333 4444 5555"
 GET_RECORDATORIO = "http://localhost:8080/reminder/find/"
 GET_SYNC = "http://localhost:8080/product_user/sync?product_number=" + ID_PRODUCT
 
 # Iniciacion de openai
-openai.api_key = "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"
+openai.api_key = "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"
 conversation = ""
 
 # configuracion de la voz del asistente
